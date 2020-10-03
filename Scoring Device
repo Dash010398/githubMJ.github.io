@@ -1,0 +1,294 @@
+#include <reg51.h>
+2.	 
+3.	#define LDUAN  P0		 
+4.	#define LWEI   P2		 
+5.	#define RDUAN  P1		 
+6.	#define RWEI   P2		 
+7.	 
+8.	#define uchar unsigned char
+9.	#define uint  unsigned int
+10.	unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+11.							  
+12.	sbit key1=P3^0;   
+13.	sbit key2=P3^1;	  
+14.	sbit key3=P3^2;	  
+15.	sbit key4=P3^3;	  
+16.	sbit key5=P3^6;	  
+17.	sbit led1=P3^4;	  
+18.	sbit led2=P3^5;	  
+19.	 
+20.	uchar lnum,rnum,a;
+21.	 
+22.	void delay(unsigned int num)     
+23.	{
+24.		unsigned i,j;
+25.		for(i=num;i>0;i--)
+26.		for(j=120;j>0;j--);
+27.	}
+28.	 
+29.	 
+30.	 
+31.	void main()
+32.	{
+33.		led1=0;	   
+34.		led2=0;	   
+35.	 while(1)
+36.	 {
+37.	
+38.		P2=0xff;		      
+39.		LWEI=0xfb;
+40.		LDUAN=table[lnum%100/10];
+41.		delay(5);
+42.		P2=0xff;
+43.		LWEI=0xf7;
+44.		LDUAN=table[lnum%100%10];
+45.		delay(5);
+46.		LWEI=0xfd;
+47.		LDUAN=table[lnum/100];
+48.		delay(5);
+49.	 
+50.		P2=0xff;		      
+51.		RWEI=0xbf;
+52.		RDUAN=table[rnum%100/10];
+53.		delay(5);
+54.		P2=0xff;
+55.		RWEI=0x7f;
+56.		RDUAN=table[rnum%10];
+57.		delay(5);
+58.		RWEI=0xdf;
+59.		RDUAN=table[rnum/100];
+60.		delay(5);
+61.	 
+62.	
+63.	if(!key1)	   
+64.	{
+65.	 delay(10);		  
+66.	 if(!key1)
+67.	 {
+68.		lnum++;		  
+69.		led1=1;		  
+70.		delay(500);	  
+71.		led1=0;		  
+72.		while(!key1); 
+73.	  }
+74.	}
+75.	
+76.	if(!key2)	   
+77.	{
+78.	 delay(10);		  
+79.	 if(!key2)
+80.	 {
+81.		lnum--;		  
+82.		led1=1;		  
+83.		delay(500);	  
+84.		led1=0;		  
+85.		while(!key2); 
+86.	  }
+87.	}
+88.	
+89.	if(!key3)	   
+90.	{
+91.	 delay(10);		  
+92.	 if(!key3)
+93.	 {
+94.		rnum++;		  
+95.		led2=1;		  
+96.		delay(500);	  
+97.		led2=0;		  
+98.		while(!key3); 
+99.	  }
+100.	}
+101.	
+102.	if(!key4)	   
+103.	{
+104.	 delay(10);		   
+105.	 if(!key4)
+106.	 {
+107.		rnum--;			   
+108.		led2=1;			   
+109.		delay(500);		   
+110.		led2=0;			   
+111.		while(!key4);	   
+112.	  }
+113.	}
+114.	
+115.	 
+116.	if(!key5)	   
+117.	{
+118.	 delay(10);		   
+119.	 if(!key5)
+120.	 {
+121.		a=rnum;			   
+122.		rnum=lnum;		   
+123.		lnum=a;			   
+124.		while(!key5);	   
+125.	  }
+126.	}
+127.	//
+128.	  }
+129.	}
+
+35.	#include <reg51.h>
+36.	#define DUAN P0		
+37.	#define WEI  P2		 
+38.	 
+39.	#define uchar unsigned char
+40.	#define uint  unsigned int
+41.	 
+42.	unsigned char code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71};
+43.							   
+44.	sbit key0=P3^0; 
+45.	sbit key1=P3^1;	
+46.	sbit key2=P3^2;	
+47.	sbit key3=P3^3;	
+48.	sbit beep=P3^7;	
+49.	 
+50.	uint addnum;			
+51.	uchar miaonum,fennum;	
+52.	uchar b;
+53.	 
+54.	void delay(unsigned int num)     
+55.	{
+56.		unsigned i,j;
+57.		for(i=num;i>0;i--)
+58.		for(j=120;j>0;j--);
+59.	}
+60.	 
+6
+67.	void Init_TIMER0_2(void)        
+68.	{
+69.	  	TMOD=0x02;					
+70.		TH0=256-250;		     	
+71.		TL0=256-250;
+72.		EA=1;						
+73.		ET0=1;						
+74.		TR0=1;					
+75.	 }
+76.	 
+77.	 
+78.	void main()
+79.	{
+80.		Init_TIMER0_2();
+81.		beep=0;			
+82.		b=10;			
+83.		fennum=12;	
+84.		miaonum=0;	
+86.	  while(1)
+87.	  {
+88.	
+89.		P2=0xff;		      
+90.		WEI=0xef;
+91.		DUAN=table[miaonum/10];
+92.		delay(5);
+93.		P2=0xff;
+94.		WEI=0xdf;
+95.		DUAN=table[miaonum%10];
+96.		delay(5);
+97.			
+98.		P2=0xff;
+99.		WEI=0Xf7;
+100.		DUAN=0X40;
+101.		delay(5);
+102.			
+103.		P2=0xff;
+104.		WEI=0xfd;
+105.		DUAN=table[fennum/10];
+106.		delay(5);
+107.		P2=0xff;
+108.		WEI=0xfb;
+109.		DUAN=table[fennum%10];
+110.		delay(5);
+111.
+112.		if(!key0)		
+113.		{
+114.		 delay(10);		
+115.		 if(!key0)
+116.		 {
+117.			fennum=0;	 
+118.			miaonum=0;	 
+119.		  }
+120.		 while(!key0);	 
+121.		  }
+122.		
+123.		if(!key1)		 
+124.		{
+125.		 delay(10);		
+126.		 if(!key1) 
+127.		 {
+128.		  fennum=12;     
+129.		  miaonum=0;    
+130.		  }
+131.		 while(!key1);	
+132.		}
+133.
+134.		if(!key2)		
+135.		{
+136.		 delay(10);		
+137.		 if(!key2) fennum++; 
+138.		 while(!key2);	 
+139.		 }
+140.		
+141.		if(!key3)
+142.		{
+143.		 delay(10);	   
+144.		 if(!key3)
+145.		 {
+146.		  TR0=~TR0;	   
+147.		  while(!key3);
+148.		  }
+149.		 }
+150.	 
+151.	   }
+152.	 }
+153.		
+154.		
+155.	 
+156.	 
+157.	 
+158.	 
+159.	 
+160.	void timer0() interrupt 1
+161.	{
+162.	 
+163.	addnum++;
+164.	if(addnum==400)
+165.	{
+166.	if(fennum!=0)
+167.	{
+168.	if(miaonum==0)
+169.	 
+170.	miaonum=59,fennum--,addnum=0;
+171.	else
+172.	miaonum--;
+173.	addnum=0;
+174.	}
+175.	 
+176.	if(fennum==0)
+177.	{
+178.	if(miaonum==0)
+179.	 
+180.	miaonum=0;
+181.	 
+182.	else
+183.	miaonum--;
+184.	addnum=0;
+185.	}
+186.	 
+187.	if(fennum==0)
+188.	{
+189.	if(miaonum==0)
+190.	{
+191.	 
+192.	if(b==0)
+193.	 
+194.	beep=0;
+195.	else
+196.		beep=1,b--;
+197.	 
+198.	}
+199.	}
+200.	 
+201.	}
+202.	}
+
+
